@@ -72,3 +72,45 @@ class componentB extends uvm_component;
     phase.drop_objection(this);
   endtask
 endclass
+
+
+
+
+class my_test extends my_env;
+  `uvm_component_utils(my_test)
+
+  componentA compA;
+  componentB compB;
+
+  int m_num_tx;
+
+  uvm_tlm_fifo #(Packet) m_tlm_fifo;
+
+  function new(string name = "my_test", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    compA = componentA::type_id::create("compA", this);
+    compB = componentB::type_id::create("compB", this);
+    std::randomize(m_num_tx) with {m_num_tx inside {[4:10]}; };
+    compA.m_num_tx = m_num_tx;
+    compB.m_num_tx = m_num_tx;
+
+    m_tlm_fifo = new("uvm_tlm_fifo", this, 2);
+  endfunction
+
+  virtual function void connect_phase(uvm_phase phase);
+    compA.m_put_port.connect(m_tlm_fifo.put_export);
+    compB.m_put_port.connect(m_tlm_fifo.get_export);
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    forever begin
+      #10;
+      if(m_tlm_fifo.is_full())
+        `uvm_info("UVM_TLM_FIFO", "FIFO FULL NOW !", UVM_MEDIUM)
+        end
+        endtask
+        endclass
