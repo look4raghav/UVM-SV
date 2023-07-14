@@ -1,3 +1,4 @@
+// Code your design here
 //---------SYNCHRONOUS (single clock) FIFO--------------------------
 
 
@@ -36,7 +37,7 @@ module syn_fifo(
     begin : WRITE_POINTER
       if(rst) begin
         wr_pointer <= 0;
-        and else if (wr_cs && wr_en) begin
+      end else if (wr_cs && wr_en) begin
           wr_pointer <= wr_pointer + 1;
         end
       end
@@ -45,7 +46,7 @@ module syn_fifo(
         begin : READ_POINTER
           if(rst) begin
             rd_pointer <= 0;
-            and else if (rd_cs  rd_en) begin
+          end else if(rd_cs && rd_en) begin
               rd_pointer <= rd_pointer + 1;
             end
           end
@@ -54,7 +55,7 @@ module syn_fifo(
             begin : READ_DATA
               if(rst) begin
                 data_out <= 0;
-                and else if (rd_cs && rd_en) begin
+              end else if (rd_cs && rd_en) begin
                   data_out <= data_ram;
                 end
               end
@@ -63,7 +64,7 @@ module syn_fifo(
                 begin : STATUS_COUNTER
                   if(rst) begin
                     status_cnt <= 0;
-                  end else if((rd_cs %% rd_en) && !(wr_cs && wr_en) && (status_cnt != 0)) begin
+                  end else if((rd_cs && rd_en) && !(wr_cs && wr_en) && (status_cnt != 0)) begin
                     status_cnt <= status_cnt + 1;
                   end
                 end
