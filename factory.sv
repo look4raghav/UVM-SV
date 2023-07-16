@@ -103,18 +103,22 @@ class test extends uvm_test;
   endfunction
   
   virtual function void build();
+    uvm_factory factory = uvm_factory::get();
     super.build();
     env = s_env::type_id::create("env",this);
     set_type_override("driver", "new_driver");
     set_config_string("*.sis","default_sequence","switch_item_sequence");
+    factory.print();
   endfunction
+  
   virtual task run();
     `uvm_info("id","working",UVM_MEDIUM)
+    `uvm_info("id", "factory print", UVM_MEDIUM)
   endtask
 endclass
 
 //-------------------------------------------------------
-
+/*
 class test2 extends uvm_test;
   s_env env;
   switch_item si;
@@ -134,6 +138,29 @@ class test2 extends uvm_test;
   endtask
 endclass
 
+//--------------------------------
+
+class test3 extends uvm_test;
+  s_env env;
+  switch_item si;
+  `uvm_component_utils(test3)
+  
+  function new(string name = "test3", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+  
+  virtual function void build_phase(uvm_phase phase);
+    uvm_factory factory = uvm_factory::get();
+    super.build_phase(phase);
+    set_type_override("driver", "new_driver");
+    factory.print();
+  endfunction
+  
+  virtual task run();
+    `uvm_info("id", "factory print", UVM_MEDIUM)
+  endtask
+endclass
+*/
 //-----------Sequence class-----------------------------
 
 
